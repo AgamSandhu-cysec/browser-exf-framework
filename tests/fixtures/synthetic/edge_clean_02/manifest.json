@@ -1,0 +1,14 @@
+{
+  "manifest_version": 2,
+  "name": "EdgeClean02 DevTools Own Tab",
+  "version": "1.0",
+  "permissions": [
+    "debugger",
+    "activeTab"
+  ],
+  "background": {
+    "scripts": [
+      "background.js"
+    ]
+  }
+}

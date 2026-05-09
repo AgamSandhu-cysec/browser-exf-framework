@@ -1,0 +1,14 @@
+{
+  "manifest_version": 2,
+  "name": "EdgeClean08 Proxy Safe Config",
+  "version": "1.0",
+  "permissions": [
+    "proxy",
+    "storage"
+  ],
+  "background": {
+    "scripts": [
+      "background.js"
+    ]
+  }
+}

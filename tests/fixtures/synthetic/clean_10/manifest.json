@@ -1,0 +1,7 @@
+{
+  "manifest_version": 3,
+  "name": "Clean10 Minimal ActiveTab",
+  "version": "1.0",
+  "permissions": ["activeTab"],
+  "action": { "default_title": "Click me" }
+}

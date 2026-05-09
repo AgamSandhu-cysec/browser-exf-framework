@@ -1,0 +1,7 @@
+{
+  "manifest_version": 2,
+  "name": "Clean03 Tab Counter",
+  "version": "1.0",
+  "permissions": ["tabs"],
+  "background": { "scripts": ["background.js"] }
+}

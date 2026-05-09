@@ -1,0 +1,7 @@
+include report/templates/*.j2
+include report/templates/poc/*.j2
+include ml/threshold.json
+include README.md
+include LICENSE
+recursive-include dynamic/harness *.js *.json
+

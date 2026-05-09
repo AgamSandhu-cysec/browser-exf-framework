@@ -1,0 +1,11 @@
+{
+  "manifest_version": 3,
+  "name": "EdgeClean12 MV3 Storage Only",
+  "version": "1.0",
+  "permissions": [
+    "storage"
+  ],
+  "action": {
+    "default_title": "Notes"
+  }
+}

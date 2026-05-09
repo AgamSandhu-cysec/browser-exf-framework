@@ -1,0 +1,49 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ext-attack-framework"
+version = "0.1.0"
+description = "Security scanner for Chrome browser extensions"
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "MIT"}
+keywords = ["security", "chrome", "extensions", "pentest", "scanner"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Information Technology",
+    "Topic :: Security",
+    "Programming Language :: Python :: 3.10",
+    "License :: OSI Approved :: MIT License",
+]
+dependencies = [
+    "typer>=0.12.3",
+    "rich>=13.7.1",
+    "requests>=2.31.0",
+    "jinja2>=3.1.4",
+    "scikit-learn>=1.5.1",
+    "numpy>=1.26.4",
+]
+
+[project.optional-dependencies]
+ml = ["imbalanced-learn>=0.12.3"]
+dev = [
+    "pytest>=8.2.2",
+    "pytest-cov>=5.0.0",
+    "ruff>=0.4.0",
+]
+
+[project.scripts]
+ext-attack = "cli:app"
+
+[tool.setuptools.packages.find]
+where = ["."]
+
+[tool.setuptools.package-data]
+"report" = ["templates/*.j2", "templates/poc/*.j2"]
+
+[tool.ruff]
+line-length = 100
+select = ["E", "F", "I"]
+

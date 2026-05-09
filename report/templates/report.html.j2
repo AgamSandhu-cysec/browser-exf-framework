@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>ext-attack-framework report — {{ ext_name }} — {{ ext_id }}</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+  <style>
+    :root {
+      --bg: #f9fafb;
+      --text: #111827;
+      --card: #ffffff;
+      --border: #e5e7eb;
+      --muted: #6b7280;
+      --topbar: #0b1220;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #111827;
+        --text: #f9fafb;
+        --card: #1f2937;
+        --border: #374151;
+        --muted: #9ca3af;
+        --topbar: #0b1220;
+      }
+    }
+
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+    a { color: inherit; }
+    .container { max-width: 960px; margin: 0 auto; padding: 18px; }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 16px;
+      margin: 14px 0;
+    }
+    .topbar {
+      width: 100%;
+      background: var(--topbar);
+      color: #fff;
+      padding: 14px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+    .topbar-inner {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 0 18px;
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: center;
+    }
+    .logo {
+      font-weight: 700;
+      letter-spacing: 0.2px;
+    }
+    .right-meta { text-align: right; }
+    .right-meta .ext { font-weight: 700; }
+    .badge {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      color: #fff;
+      vertical-align: middle;
+      margin-left: 8px;
+    }
+    .pill-row { display: flex; flex-wrap: wrap; gap: 10px; }
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      color: #fff;
+      font-weight: 700;
+      font-size: 13px;
+    }
+    .summary-border {
+      border-left: 5px solid {{ severity_colors.get(highest_severity, '#16a34a') }};
+    }
+    .muted { color: var(--muted); }
+
+    .perm-grid { display: flex; flex-wrap: wrap; gap: 8px; }
+    .perm {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: rgba(107,114,128,0.08);
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .table-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td {
+      border-bottom: 1px solid var(--border);
+      padding: 10px 10px;
+      text-align: left;
+      vertical-align: top;
+      font-size: 13px;
+    }
+    th { font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); }
+
+    details.finding { border-radius: 10px; }
+    details.finding summary { cursor: pointer; list-style: none; }
+    details.finding summary::-webkit-details-marker { display: none; }
+
+    .row-grid {
+      display: grid;
+      grid-template-columns: 50px 110px 140px 1.2fr 100px 140px 120px;
+      gap: 10px;
+      align-items: start;
+    }
+    .sev-chip {
+      display: inline-block;
+      padding: 4px 8px;
+      border-radius: 6px;
+      color: #fff;
+      font-weight: 800;
+      font-size: 12px;
+    }
+    .conf-bar {
+      display: inline-block;
+      vertical-align: middle;
+      width: 60px;
+      height: 8px;
+      border-radius: 2px;
+      background: rgba(107,114,128,0.2);
+      margin-right: 8px;
+      overflow: hidden;
+    }
+    .conf-bar > span { display: inline-block; height: 8px; border-radius: 2px; }
+    .detail {
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px dashed var(--border);
+    }
+    pre {
+      background: rgba(0,0,0,0.25);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px;
+      overflow-x: auto;
+      margin: 10px 0;
+    }
+    code { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
+    .footer { text-align: center; color: var(--muted); padding: 30px 0; font-size: 12px; }
+  </style>
+</head>
+<body>
+
+<!-- ① TOP BAR -->
+<div class="topbar">
+  <div class="topbar-inner">
+    <div class="logo">ext-attack-framework <span class="muted">v{{ version }}</span></div>
+    <div class="right-meta">
+      <div class="ext">{{ ext_name }} <span class="muted">v{{ ext_version }}</span>
+        {% set badge_color = severity_colors.get(highest_severity, '#16a34a') %}
+        <span class="badge" style="background: {{ badge_color }};">
+          {{ highest_severity | upper if highest_severity != 'none' else 'NONE' }}
+        </span>
+      </div>
+      <div class="muted">Extension ID: <code>{{ ext_id }}</code></div>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- ② EXECUTIVE SUMMARY -->
+  <div class="card summary-border">
+    <div style="font-weight:800; margin-bottom:8px;">Executive summary</div>
+    <div>{{ executive_summary }}</div>
+  </div>
+
+  <!-- ③ SEVERITY SUMMARY ROW -->
+  <div class="card">
+    <div style="font-weight:800; margin-bottom:10px;">Severity summary</div>
+    <div class="pill-row">
+      <div class="pill" style="background: {{ severity_colors['critical'] }};">● CRITICAL {{ counts.critical }}</div>
+      <div class="pill" style="background: {{ severity_colors['high'] }};">● HIGH {{ counts.high }}</div>
+      <div class="pill" style="background: {{ severity_colors['medium'] }};">● MEDIUM {{ counts.medium }}</div>
+      <div class="pill" style="background: {{ severity_colors['low'] }};">● LOW {{ counts.low }}</div>
+      <div class="pill" style="background: {{ severity_colors['info'] }};">● INFO {{ counts.info }}</div>
+    </div>
+  </div>
+
+  <!-- ④ PERMISSIONS HEATMAP -->
+  <div class="card">
+    <div style="font-weight:800; margin-bottom:10px;">Declared permissions</div>
+    <div class="perm-grid">
+      {% for p in permissions %}
+        {% set danger = 'safe' %}
+        {% if p in ['<all_urls>','*://*/*','debugger','nativeMessaging'] %}
+          {% set danger = 'critical' %}
+        {% elif p in ['cookies','webRequest','webRequestBlocking','tabs','history','proxy','management'] %}
+          {% set danger = 'high' %}
+        {% elif p in ['clipboardRead'] %}
+          {% set danger = 'medium' %}
+        {% endif %}
+        <span class="perm" style="border-color: {{ severity_colors.get(danger, '#6b7280') }};">
+          {{ p }}
+        </span>
+      {% endfor %}
+    </div>
+  </div>
+
+  <!-- ⑤ FINDINGS TABLE -->
+  <div class="card">
+    <div style="font-weight:800; margin-bottom:10px;">Findings</div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th style="width:50px;">#</th>
+            <th style="width:110px;">Severity</th>
+            <th style="width:140px;">Module</th>
+            <th>Title</th>
+            <th style="width:100px;">CWE</th>
+            <th style="width:140px;">Confidence</th>
+            <th style="width:120px;">PoC</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for f in findings %}
+            {% set fid = f._fid %}
+            {% set sev = f.severity %}
+            {% set sev_color = severity_colors.get(sev, severity_colors['info']) %}
+            {% set conf = (f.confidence or 0.0) %}
+            {% set pct = (conf * 100) | int %}
+            {% set conf_color = '#dc2626' if pct < 40 else ('#ca8a04' if pct < 70 else '#16a34a') %}
+            <tr>
+              <td colspan="7" style="padding: 0; border-bottom: 1px solid var(--border);">
+                <details class="finding">
+                  <summary style="padding: 10px 10px;">
+                    <div class="row-grid">
+                      <div><strong>{{ loop.index }}</strong></div>
+                      <div><span class="sev-chip" style="background: {{ sev_color }};">{{ sev | upper }}</span></div>
+                      <div><code>{{ f.module }}</code></div>
+                      <div><strong>{{ f.title }}</strong></div>
+                      <div>
+                        {% if f.cwe %}
+                          <a href="https://cwe.mitre.org/data/definitions/{{ f.cwe.replace('CWE-','') }}.html" target="_blank" rel="noopener">
+                            {{ f.cwe }}
+                          </a>
+                        {% else %}
+                          —
+                        {% endif %}
+                      </div>
+                      <div>
+                        <span class="conf-bar"><span style="width:{{ (conf*60)|int }}px;background:{{ conf_color }};"></span></span>
+                        {{ pct }}%
+                      </div>
+                      <div>
+                        {% if poc_paths.get(fid) %}
+                          <a href="poc/{{ poc_paths.get(fid) }}">{{ poc_paths.get(fid) }}</a>
+                        {% else %}
+                          —
+                        {% endif %}
+                      </div>
+                    </div>
+                  </summary>
+
+                  <!-- ⑥ FINDING DETAIL -->
+                  <div class="detail">
+                    <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;">
+                      <div style="font-weight:900;font-size:16px;">{{ f.title }}</div>
+                      <span class="sev-chip" style="background: {{ sev_color }};">{{ sev | upper }}</span>
+                      {% if f.cwe %}
+                        <a class="muted" href="https://cwe.mitre.org/data/definitions/{{ f.cwe.replace('CWE-','') }}.html" target="_blank" rel="noopener">{{ f.cwe }}</a>
+                      {% endif %}
+                    </div>
+                    <div class="muted" style="margin-top:6px;">
+                      File: <code>{{ f.file }}</code>
+                      {% if f.line is not none %} : <code>{{ f.line }}</code>{% endif %}
+                    </div>
+
+                    <pre><code class="language-javascript">{{ f.evidence | e }}</code></pre>
+
+                    <div style="margin: 10px 0;">{{ f.description }}</div>
+
+                    {% set scenario = attack_scenarios.get(f.cwe, "exploit this vulnerability to abuse the extension's permissions") %}
+                    <div class="card" style="margin: 10px 0; padding: 12px; border-left: 4px solid {{ sev_color }};">
+                      <div style="font-weight:800;margin-bottom:6px;">Attack scenario</div>
+                      <div>An attacker who controls a webpage could {{ scenario }}.</div>
+                    </div>
+
+                    <div style="font-weight:800;margin-top:10px;">Remediation</div>
+                    <div>{{ f.remediation }}</div>
+
+                    <div style="font-weight:800;margin-top:12px;">ML confidence</div>
+                    <div style="margin-top:6px;">
+                      <span class="conf-bar"><span style="width:{{ (conf*60)|int }}px;background:{{ conf_color }};"></span></span>
+                      <strong>{{ pct }}%</strong>
+                      <span class="muted" style="margin-left:10px;">Likely false positive:
+                        <strong>{{ 'YES' if f.likely_fp else 'NO' }}</strong>
+                      </span>
+                    </div>
+
+                    {% if poc_paths.get(fid) %}
+                      <div style="margin-top:12px;">
+                        <strong>PoC:</strong> <a href="poc/{{ poc_paths.get(fid) }}">{{ poc_paths.get(fid) }}</a>
+                      </div>
+                    {% endif %}
+                  </div>
+                </details>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ⑦ FOOTER -->
+  <div class="footer">
+    Generated by ext-attack-framework v{{ version }} on {{ scan_date }}
+  </div>
+
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script>try{hljs.highlightAll();}catch(e){};</script>
+</body>
+</html>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>{{ tool_name }} — scan report</title>
+  <style>
+    :root { --bg:#0f1419; --card:#1a2332; --text:#e6edf3; --muted:#8b9cb3; --crit:#f85149; --high:#db6d28; --med:#d29922; --low:#58a6ff; --info:#8b949e; }
+    body { font-family: system-ui, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 2rem; line-height: 1.5; }
+    header { border-bottom: 1px solid #30363d; padding-bottom: 1rem; margin-bottom: 2rem; }
+    h1 { font-size: 1.4rem; margin: 0 0 .5rem; }
+    .meta { color: var(--muted); font-size: .9rem; }
+    .badge { display: inline-block; padding: .15rem .5rem; border-radius: 4px; font-size: .75rem; font-weight: 600; text-transform: uppercase; }
+    .critical { background: #3d1f1f; color: var(--crit); }
+    .high { background: #3d2818; color: var(--high); }
+    .medium { background: #3d3319; color: var(--med); }
+    .low { background: #152238; color: var(--low); }
+    .info { background: #21262d; color: var(--info); }
+    article { background: var(--card); border-radius: 8px; padding: 1.25rem; margin-bottom: 1.25rem; border: 1px solid #30363d; }
+    h2 { font-size: 1rem; margin: 0 0 .75rem; display: flex; align-items: center; gap: .5rem; flex-wrap: wrap; }
+    pre { background: #010409; padding: 1rem; border-radius: 6px; overflow-x: auto; font-size: .82rem; border: 1px solid #30363d; }
+    .poc { margin-top: 1rem; padding-top: 1rem; border-top: 1px dashed #30363d; }
+    .poc h3 { font-size: .85rem; color: #58a6ff; margin: 0 0 .5rem; }
+    .muted { color: var(--muted); font-size: .85rem; }
+    code { font-family: ui-monospace, monospace; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>{{ tool_name }} <span class="muted">v{{ version }}</span></h1>
+    <p class="meta">Target: <strong>{{ target | e }}</strong></p>
+    <p class="meta">{{ findings | length }} finding(s)</p>
+  </header>
+
+  {% for f in findings %}
+  <article id="finding-{{ loop.index }}">
+    <h2>
+      <span class="badge {{ f.severity }}">{{ f.severity }}</span>
+      <span>{{ f.title | e }}</span>
+    </h2>
+    <p class="muted">{{ f.module | e }} {% if f.cwe %}· {{ f.cwe | e }}{% endif %} · confidence {{ f.confidence }}</p>
+    <p>{{ f.description | e }}</p>
+    <p><strong>Remediation:</strong> {{ f.remediation | e }}</p>
+    {% if f.file %}
+    <p class="muted"><strong>File:</strong> <code>{{ f.file | e }}</code>{% if f.line is not none %} :{{ f.line }}{% endif %}</p>
+    {% endif %}
+    <h3 class="muted" style="font-size:.8rem;margin:1rem 0 .25rem;">Evidence</h3>
+    <pre>{{ f.evidence | e }}</pre>
+    {% if f.poc_payload or f.poc_description %}
+    <div class="poc">
+      <h3>Proof-of-concept</h3>
+      {% if f.poc_description %}
+      <p>{{ f.poc_description | e }}</p>
+      {% endif %}
+      {% if f.poc_payload %}
+      <pre><code>{{ f.poc_payload | e }}</code></pre>
+      {% endif %}
+    </div>
+    {% endif %}
+  </article>
+  {% endfor %}
+</body>
+</html>

@@ -1,0 +1,19 @@
+{
+  "manifest_version": 2,
+  "name": "EdgeVuln04 Tabs GithubIO ExtConn",
+  "version": "1.0",
+  "permissions": [
+    "tabs",
+    "cookies"
+  ],
+  "externally_connectable": {
+    "matches": [
+      "*://*.github.io/*"
+    ]
+  },
+  "background": {
+    "scripts": [
+      "background.js"
+    ]
+  }
+}

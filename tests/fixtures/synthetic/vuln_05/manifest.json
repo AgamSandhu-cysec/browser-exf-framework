@@ -1,0 +1,7 @@
+{
+  "manifest_version": 2,
+  "name": "Vuln05 Native Messaging",
+  "version": "1.0",
+  "permissions": ["nativeMessaging", "<all_urls>"],
+  "background": { "scripts": ["background.js"] }
+}

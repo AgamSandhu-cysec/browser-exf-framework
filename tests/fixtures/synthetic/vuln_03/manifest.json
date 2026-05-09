@@ -1,0 +1,7 @@
+{
+  "manifest_version": 2,
+  "name": "Vuln03 API Key Leak",
+  "version": "1.0",
+  "permissions": ["<all_urls>"],
+  "background": { "scripts": ["background.js"] }
+}

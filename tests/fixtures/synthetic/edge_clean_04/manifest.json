@@ -1,0 +1,14 @@
+{
+  "manifest_version": 2,
+  "name": "EdgeClean04 Crypto Wallet Style",
+  "version": "1.0",
+  "permissions": [
+    "storage",
+    "notifications"
+  ],
+  "background": {
+    "scripts": [
+      "background.js"
+    ]
+  }
+}

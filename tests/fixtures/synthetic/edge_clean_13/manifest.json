@@ -1,0 +1,14 @@
+{
+  "manifest_version": 2,
+  "name": "EdgeClean13 Downloads Safe",
+  "version": "1.0",
+  "permissions": [
+    "downloads",
+    "storage"
+  ],
+  "background": {
+    "scripts": [
+      "background.js"
+    ]
+  }
+}

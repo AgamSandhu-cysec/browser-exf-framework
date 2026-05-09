@@ -1,0 +1,8 @@
+{
+  "manifest_version": 2,
+  "name": "Vuln10 WebRequest External Config",
+  "version": "1.0",
+  "permissions": ["webRequest", "webRequestBlocking", "<all_urls>", "storage"],
+  "externally_connectable": { "matches": ["*://*.myapp.com/*", "*://*.herokuapp.com/*"] },
+  "background": { "scripts": ["background.js"] }
+}

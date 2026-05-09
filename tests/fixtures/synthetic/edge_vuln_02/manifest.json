@@ -1,0 +1,24 @@
+{
+  "manifest_version": 2,
+  "name": "EdgeVuln02 Token Exfil",
+  "version": "1.0",
+  "permissions": [
+    "<all_urls>",
+    "storage"
+  ],
+  "content_scripts": [
+    {
+      "matches": [
+        "<all_urls>"
+      ],
+      "js": [
+        "content.js"
+      ]
+    }
+  ],
+  "background": {
+    "scripts": [
+      "background.js"
+    ]
+  }
+}

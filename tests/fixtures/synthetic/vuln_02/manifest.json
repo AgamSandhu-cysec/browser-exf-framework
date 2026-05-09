@@ -1,0 +1,8 @@
+{
+  "manifest_version": 2,
+  "name": "Vuln02 ExtConnectable HighPriv",
+  "version": "1.0",
+  "permissions": ["tabs", "history"],
+  "externally_connectable": { "matches": ["*://*/*"] },
+  "background": { "scripts": ["background.js"] }
+}

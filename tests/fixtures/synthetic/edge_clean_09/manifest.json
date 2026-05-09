@@ -1,0 +1,14 @@
+{
+  "manifest_version": 2,
+  "name": "EdgeClean09 History Search Safe",
+  "version": "1.0",
+  "permissions": [
+    "history",
+    "storage"
+  ],
+  "background": {
+    "scripts": [
+      "background.js"
+    ]
+  }
+}

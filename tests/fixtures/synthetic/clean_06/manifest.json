@@ -1,0 +1,7 @@
+{
+  "manifest_version": 2,
+  "name": "Clean06 Multi Perm Safe",
+  "version": "1.0",
+  "permissions": ["tabs", "history", "bookmarks", "storage", "notifications", "contextMenus"],
+  "background": { "scripts": ["background.js"] }
+}

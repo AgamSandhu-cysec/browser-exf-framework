@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>PoC — externally_connectable Abuse — {{ ext_id }}</title>
+<style>
+  body { font-family: monospace; max-width: 800px; margin: 40px auto;
+         background: #1a1a1a; color: #e0e0e0; padding: 20px; }
+  h2 { color: #ff6b6b; }
+  .meta { background: #2a2a2a; border-left: 3px solid #444;
+          padding: 12px; margin: 16px 0; }
+  pre { background: #0d0d0d; padding: 16px; overflow-x: auto;
+        border: 1px solid #333; border-radius: 4px; }
+  button { background: #ff6b6b; color: #fff; border: none;
+           padding: 10px 24px; cursor: pointer; font-size: 14px;
+           border-radius: 4px; margin-top: 16px; }
+  button:hover { background: #ff4444; }
+  #result { margin-top: 16px; background: #0d0d0d; padding: 16px;
+            border: 1px solid #333; border-radius: 4px;
+            min-height: 60px; white-space: pre-wrap; }
+  .tag { display: inline-block; padding: 2px 8px; border-radius: 3px;
+         font-size: 12px; background: #ff6b6b; color: #fff; }
+</style>
+</head>
+<body>
+<h2>PoC: externally_connectable Abuse</h2>
+<div class="meta">
+  <div><strong>Extension ID:</strong> <code>{{ ext_id }}</code></div>
+  <div><strong>Finding:</strong> {{ finding.title }}</div>
+  <div><strong>Severity:</strong>
+    <span class="tag">{{ finding.severity | upper }}</span></div>
+  <div><strong>Confidence:</strong>
+    {{ (finding.confidence * 100) | int }}%</div>
+  <div><strong>Generated:</strong> {{ generated_at }}</div>
+</div>
+
+<p class="meta">
+  This page must be served from a domain matching:
+  <code>{{ finding.evidence }}</code>
+</p>
+
+<button id="launch">Probe Extension</button>
+<div id="result">Click Probe Extension to send a message...</div>
+
+<script>
+const EXT_ID = "{{ ext_id }}";
+document.getElementById('launch').onclick = function() {
+  var result = document.getElementById('result');
+  if (typeof chrome === 'undefined' || !chrome.runtime) {
+    result.textContent =
+      'ERROR: chrome.runtime not available.\n' +
+      'This page must be served from a matching origin:\n' +
+      '{{ finding.evidence }}';
+    return;
+  }
+  chrome.runtime.sendMessage(EXT_ID,
+    {{ finding.poc_payload or '{"type":"probe"}' }},
+    function(response) {
+      result.textContent = response
+        ? 'Extension responded:\n' + JSON.stringify(response, null, 2)
+        : 'No response (check DevTools console for errors)';
+    }
+  );
+};
+</script>
+</body>
+</html>
+

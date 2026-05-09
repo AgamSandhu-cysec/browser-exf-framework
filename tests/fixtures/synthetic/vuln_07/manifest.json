@@ -1,0 +1,8 @@
+{
+  "manifest_version": 2,
+  "name": "Vuln07 CORS Proxy",
+  "version": "1.0",
+  "permissions": ["<all_urls>"],
+  "background": { "scripts": ["background.js"] },
+  "content_scripts": [{ "matches": ["<all_urls>"], "js": ["content.js"] }]
+}

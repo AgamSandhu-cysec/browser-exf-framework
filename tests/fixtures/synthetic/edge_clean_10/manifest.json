@@ -1,0 +1,13 @@
+{
+  "manifest_version": 2,
+  "name": "EdgeClean10 NativeMsg Safe",
+  "version": "1.0",
+  "permissions": [
+    "nativeMessaging"
+  ],
+  "background": {
+    "scripts": [
+      "background.js"
+    ]
+  }
+}

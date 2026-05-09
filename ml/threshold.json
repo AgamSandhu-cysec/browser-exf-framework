@@ -1,0 +1,9 @@
+{
+  "version": 1,
+  "threshold": 0.7,
+  "precision": 1.0,
+  "recall": 0.9412,
+  "features": 31,
+  "auc": 0.9483,
+  "dataset_size": 40
+}

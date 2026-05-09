@@ -1,0 +1,13 @@
+{
+  "manifest_version": 2,
+  "name": "EdgeClean11 Management Safe",
+  "version": "1.0",
+  "permissions": [
+    "management"
+  ],
+  "background": {
+    "scripts": [
+      "background.js"
+    ]
+  }
+}

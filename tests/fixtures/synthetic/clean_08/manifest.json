@@ -1,0 +1,7 @@
+{
+  "manifest_version": 2,
+  "name": "Clean08 Test API Key",
+  "version": "1.0",
+  "permissions": ["storage"],
+  "background": { "scripts": ["background.js"] }
+}

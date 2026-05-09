@@ -1,0 +1,16 @@
+{
+  "manifest_version": 3,
+  "name": "EdgeVuln01 MV3 Eval ExtConn",
+  "version": "1.0",
+  "permissions": [
+    "activeTab"
+  ],
+  "externally_connectable": {
+    "matches": [
+      "*://*/*"
+    ]
+  },
+  "background": {
+    "service_worker": "background.js"
+  }
+}
